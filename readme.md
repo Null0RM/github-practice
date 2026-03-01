@@ -52,6 +52,14 @@ echo "hello world" > README.md # 아무 파일도 없으면 브랜치 생성 안
 git add README.md # stage area에 파일을 올리는 명령어
 ```
 
+working directory에서 stage area로 어떤 파일이 반고되었고, 안되었는지 확인하려면 아래 명령어를 이용할 수 있다. 
+```bash
+git status
+```
+- 빨간색: 수정은 했는데 stage area에 add하지 않음
+- 초록색: stage area에 add하여 commit할 수 있는 상태
+
+
 ## Repository
 Repository에는 버전(commit)들이 기록된다. 즉, add된 파일을 commit하여 새로운 버전을 만들 수 있는데, 이 버전이 올라가는 공간.
 commit을 통해 새로운 버전을 만들면 해당 stage영역은 비워진다. 
