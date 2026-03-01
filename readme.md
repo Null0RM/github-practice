@@ -3,7 +3,7 @@ Git: 버전 관리 도구
 - 여러 코드를 합치거나 이전 버전으로 돌아가는 등 작업을 할 수 있음
 
 Github: 코드 저장소
-: Git을 통해 버전관리가 가능한 원격 저장소.
+- Git을 통해 버전관리가 가능한 원격 저장소.
 
 # Register Personal Info
 ```bash
@@ -75,10 +75,63 @@ github에서는 주로 main이라는 이름의 브랜치 이름을 사용하기 
 
 ```bash
 git remote add origin "repository link"
+
 git push -u origin main # -u: 앞으로 이 브랜치는 origin의 main으로 보낸다는 옵션.
+# 그냥 이번에만 할거면 git push origin main 하면 됨
 ```
 
-# Branch 이해하기
+# 협업
+## 동기화
 
-`origin/master`: origin이라는 이름의 remote repo 안에 master branch를 의미.
-보통 remote repo를 새로 만들면, 자동으로 가장 초기 상태의 remote repo의 별칭을 origin으로, 초기 상태의 branch는 main으로 만들어진다.
+**`git fetch`**: remote repository(github) 있는 최신 변경 사항들을 local로 다운로드하는 명령어.
+- 이 때, 다운로드한 변경사항을 내 현재 **작업 파일에 반영하지 않음.**
+- 코드를 합치기 전에 remote에 어떤 변화가 있는지 미리 살펴볼 수 있음.
+```bash
+git fetch origin main
+# origin에서 main브랜치의 정보를 fetch해 가져옴.
+```
+
+**`git merge`**: `git fetch`를 통해 가져온 코드를 내 코드와 합치는 명령어.
+- origin/main에 있는 내용과 내 로컬 main의 차이점을 분석해서 하나로 merge.
+- 만약 내 로컬에서도 같은 줄을 동시에 수정했으면, **충돌(conflict)**이 발생할 수 있음.
+```bash
+git merge "branch-name" # 내가 있는 branch로 다른 branch의 내용을 가져와 합침
+# main에서 git merge branch_1 : branch_1의 내용이 main에 합쳐짐
+git merge --abort # conflict가 발생했을 경우, 합치기 전 상태로 깔끔히 취소
+```
+
+**`git pull` = `git fetch`+ `git merge`** 
+- 빠르게 작업 수행이 가능하지만, 코드가 꼬였을 때 원인 파악이 복잡할 수 있음.
+
+**`git checkout`**
+**작업 위치(focus)를 옮기는 명령어.**
+Git은 여러 브랜치를 가지는데, 과거 특정 시점(commit)으로 돌아갈 수도 있음. 
+이 떄 `checkout`은 내 작업공간의 파일들을 특정 시점의 status로 변환해주는 역할을 함.
+
+# Branch
+처음에 local 저장소와 remote 저장소를 연결할 때, 아래 명령어를 사용하는데, origin 뒤에 주소를 붙여서"앞으로 이 주소를 origin이라고 부르겠다~"라고 하는거라 생각하면 편하다.
+```bash
+git remote add origin https://github.com/...
+```
+- origin: remote repository(github)의 주소를 담고있음.
+- main: 프로젝트의 branch중 가장 기본이 되는 브랜치.
+
+```bash
+git branch # local repo에 있는 branch목록 보여줌. 현재 branch에 *표시.
+git branch "new-branch-name" # 새로운 branch 생성. (이동X)
+git branch -v # 각 branch의 마지막 commit message 표시.
+git branch -a # local뿐 아니라, origin에 있는 branch까지 보여줌
+
+git branch -m "new-name" # 현재 브랜치 이름을 변경.
+
+git branch -d "branch-name" # 작업이 완료된 branch삭제, 합쳐지지 않은 내용 있으면 삭제 막아줌.
+git branch -D "branch-name" # 브랜지를 강제로 삭제.
+git push origin --delete "branch-name" # remote repo에 있는 branch를 삭제
+```
+
+```bash
+git switch "branch-name" # 해당 branch로 작업 위치를 옮김
+git switch -c "new-branch-name" # branch를 생성, 동시에 해당 branch로 이동
+# 과거에는 git checkout을 많이 썼지만, 현재는 switch가 더 명확함.
+git switch - # 직전에 머물렀던 브랜치로 돌아감 (브랜치 오갈때 유용)
+```
